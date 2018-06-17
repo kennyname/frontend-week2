@@ -26,12 +26,39 @@
             </div>
           </div>
           <div class="content" v-if="!show_inner">
-            <ul>
-              <li v-for="city in city_arr" @click="show_item(city)">{{city.Name}}</li>
-            </ul>
+            <h2>Showing {{all_data.length}}  Results</h2>
+            <div class="items">
+              <div class="item" v-for="city in city_arr" @click="show_item(city)">
+                <div class="img_block">
+                  <img :src="city.Picture1" alt="">
+                </div>
+                <div class="info">
+                  <h3>{{city.Name}}</h3>
+                  <p class="description">{{city.Description}}</p>
+                  <p class="ticket">{{city.Ticketinfo}}</p>
+                  <div class="addition">
+                    <span>地址:</span><p> {{city.Add}}</p>
+                    <span>開放時間:</span><p> {{city.Opentime}}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="content" v-else>
-            <h1>{{inner_data.Name}}</h1>
+            <div class="inner_data">
+              <img :src="inner_data.Picture1" alt="">
+              <div class="info">
+                <h3>{{inner_data.Name}}</h3>
+                <p class="description">{{inner_data.Description}}</p>
+                <p class="ticket">{{inner_data.Ticketinfo}}</p>
+                <div class="addition">
+                  <span>地址:</span><p> {{inner_data.Add}}</p>
+                  <span>開放時間:</span><p> {{inner_data.Opentime}}</p>
+                </div>
+                <div class="back" @click="show_inner = false">返回</div>
+              </div>
+              
+            </div>
           </div>
         </div>
       </div>
@@ -73,6 +100,7 @@ export default {
   },
   methods: {
     filter_data () {
+      this.show_inner = false
       const datas = []
       let final = []
       if(this.condition.zone.length == 0 && this.condition.search == '' && this.condition.is_open.length == 0) {
@@ -162,6 +190,51 @@ export default {
 </script>
 
 <style lang="scss">
+  @mixin inner_data {
+    .img_block {
+      max-width: 240px;
+      min-width: 240px;
+      height: 100%;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .info {
+      margin-left: 15px;
+      h3 {
+        margin: 0;
+      }
+      .description {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ticket {
+        color: #ccc;
+        font-weight: bold;
+        margin: 0;
+      }
+      .addition {
+        display: flex;
+        span {
+          font-weight: bold;
+          color: #ccc;
+        }
+        p {
+          display: inline-block;
+          margin: 0;
+          margin: 0 15px;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+  * {
+    font-family: '微軟正黑體';
+  }
   html, body {
     width: 100%;
     height: 100%;
@@ -171,9 +244,19 @@ export default {
   .zone {
     display: inline-block;
   }
-  .page-item {
-    display: inline-block;
+  .pagination {
+    display: flex;
     list-style: none;
+    align-items: center;
+    color: blue;
+    justify-content: flex-end;
+    margin-right: 10px;
+    .page-item {
+      display: inline-block;
+      list-style: none;
+      margin: 0 5px;    
+      padding: 10px;
+    }
   }
   .wrapper {
     width: 100%;
@@ -184,7 +267,6 @@ export default {
       display: flex;
       flex-direction: column;
       nav {
-        width: 100%;
         background-color: #9013FE;
         height: 40px;
         display: flex;
@@ -192,6 +274,7 @@ export default {
         padding: 10px 0px 10px 40px;
         h2 {
           color: white;
+          cursor: pointer;
         }
         .search {
           margin-left: 10%;
@@ -212,21 +295,81 @@ export default {
       }
       .main {
         display: flex;
+        margin-top: 20px;
         .filters {
           display: flex;
           flex-direction: column;
-          width: 35%;
+          width: 20%;
+          margin-left: 20px;
           max-width: 400px;
           .block {
-            width: 95%;
-            margin-left: 5%;
-            border-radius: 5px;
+            border-radius: 3px;
             display: flex;
-            justify-content: center;
             flex-wrap: wrap;
-            background-color: #ddd;
+            justify-content: center;
+            background-color: #eee;
             .zone {
               margin: 10px 10px 10px 8px;
+            }
+          }
+        }
+        .content {
+          width: 80%;
+          display: flex;
+          flex-direction: column;
+          margin-bottom: 20px;
+          .inner_data {
+            width: 80%;
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            img {
+              width: 100%;
+            }
+            .ticket {
+              color: #ccc;
+              font-weight: bold;
+            }
+            .addition {
+              display: flex;
+              span {
+                font-weight: bold;
+                color: #ccc;
+              }
+              p {
+                display: inline-block;
+                margin: 0px 15px;
+                font-weight: 500;
+              }
+            }
+            .back {
+              display: inline-block;
+              background-color: #ccc;
+              text-align: center;
+              padding: 8px 20px;
+              color: white;
+              cursor: pointer;
+              border-radius: 3px;
+              margin-top: 10px;
+            }
+          }
+          h2 {
+            display: inline-block;
+            margin: 0;
+            margin-left: 30px;
+            color: #aaa;
+          }
+          .items {
+            padding: 0 20px;
+            .item {
+              height: 200px;
+              cursor: pointer;
+              border: solid 1px #ccc;
+              margin: 15px 0;
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              @include inner_data;
             }
           }
         }
